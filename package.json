@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mongodb": "^5.9.2"
+  },
+  "name": "academix-hub-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Programming-Hero-Web-Course4/b11a11-server-side-syedbayzid82849.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Programming-Hero-Web-Course4/b11a11-server-side-syedbayzid82849/issues"
+  },
+  "homepage": "https://github.com/Programming-Hero-Web-Course4/b11a11-server-side-syedbayzid82849#readme",
+  "description": ""
+}
