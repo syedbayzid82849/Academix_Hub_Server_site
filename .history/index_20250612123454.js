@@ -70,14 +70,7 @@ async function run() {
             res.send(studentSays);
         });
 
-        // post operations
-
-        // send course data to database 
-        app.post('/all-course', async (req, res) => {
-            const course = req.body;
-            const result = await coursesCollection.insertOne(course);
-            res.send(result);
-        });
+        post 
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });

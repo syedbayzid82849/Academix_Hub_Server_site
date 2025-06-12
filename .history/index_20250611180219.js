@@ -30,23 +30,6 @@ async function run() {
         // const usersCollection = database.collection("users");
 
         // post operations
-        // app.post('/enrollments', async (req, res) => {
-        //     const { userEmail, courseId } = req.body;
-
-        //     const already = await enrollmentsCollection.findOne({ userEmail, courseId });
-        //     if (already) return res.send({ success: false, message: 'Already enrolled' });
-
-        //     const course = await coursesCollection.findOne({ _id: new ObjectId(courseId) });
-        //     const enrolledCount = await enrollmentsCollection.countDocuments({ courseId });
-
-        //     if (enrolledCount >= course.seats) {
-        //         return res.send({ success: false, message: 'No seats left' });
-        //     }
-
-        //     const result = await enrollmentsCollection.insertOne(req.body);
-        //     res.send({ success: true, insertedId: result.insertedId });
-        // });
-
 
         // get operations
 
@@ -68,15 +51,6 @@ async function run() {
         app.get('/student-says', async (req, res) => {
             const studentSays = await studentSaysCollection.find().toArray();
             res.send(studentSays);
-        });
-
-        // post operations
-
-        // send course data to database 
-        app.post('/all-course', async (req, res) => {
-            const course = req.body;
-            const result = await coursesCollection.insertOne(course);
-            res.send(result);
         });
 
         // Send a ping to confirm a successful connection

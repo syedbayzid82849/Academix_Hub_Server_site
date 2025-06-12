@@ -29,25 +29,6 @@ async function run() {
         // const instructorsCollection = database.collection("instructors");   
         // const usersCollection = database.collection("users");
 
-        // post operations
-        // app.post('/enrollments', async (req, res) => {
-        //     const { userEmail, courseId } = req.body;
-
-        //     const already = await enrollmentsCollection.findOne({ userEmail, courseId });
-        //     if (already) return res.send({ success: false, message: 'Already enrolled' });
-
-        //     const course = await coursesCollection.findOne({ _id: new ObjectId(courseId) });
-        //     const enrolledCount = await enrollmentsCollection.countDocuments({ courseId });
-
-        //     if (enrolledCount >= course.seats) {
-        //         return res.send({ success: false, message: 'No seats left' });
-        //     }
-
-        //     const result = await enrollmentsCollection.insertOne(req.body);
-        //     res.send({ success: true, insertedId: result.insertedId });
-        // });
-
-
         // get operations
 
         // all courses find 
@@ -56,27 +37,22 @@ async function run() {
             res.send(courses);
         });
 
-        // find course for details
-        app.get('/all-course/:id', async (req, res) => {
+        // find courses for details
+        app.get('/course-details/:id', async (req, res) => {
             const id = req.params.id
-            const query = { _id: new ObjectId(id) };
-            const result = await coursesCollection.findOne(query);
-            res.send(result);
+            const query = { _id: new ObjectI };
+            const course = await coursesCollection.findOne(query);
+            if (course) {
+                res.send(course);
+            } else {
+                res.status(404).send({ message: "Course not found" });
+            }
         })
 
         // students says
         app.get('/student-says', async (req, res) => {
             const studentSays = await studentSaysCollection.find().toArray();
             res.send(studentSays);
-        });
-
-        // post operations
-
-        // send course data to database 
-        app.post('/all-course', async (req, res) => {
-            const course = req.body;
-            const result = await coursesCollection.insertOne(course);
-            res.send(result);
         });
 
         // Send a ping to confirm a successful connection
