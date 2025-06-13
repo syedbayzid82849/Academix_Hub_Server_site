@@ -64,6 +64,7 @@ async function run() {
             const result = await coursesCollection.findOne(query);
             res.send(result);
         })
+        
 
         // students says
         app.get('/student-says', async (req, res) => {

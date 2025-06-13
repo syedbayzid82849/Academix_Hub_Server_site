@@ -84,7 +84,6 @@ async function run() {
         app.post('/enrollled-users', async (req, res) => {
             const enrolledData = req.body;
             const result = await enrolledUsersDetails.insertOne(enrolledData)
-            res.send(result);
         })
 
         // Send a ping to confirm a successful connection

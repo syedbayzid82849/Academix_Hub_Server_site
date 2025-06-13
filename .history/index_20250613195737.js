@@ -65,6 +65,8 @@ async function run() {
             res.send(result);
         })
 
+        fi
+
         // students says
         app.get('/student-says', async (req, res) => {
             const studentSays = await studentSaysCollection.find().toArray();

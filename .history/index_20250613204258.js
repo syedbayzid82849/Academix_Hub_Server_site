@@ -65,6 +65,12 @@ async function run() {
             res.send(result);
         })
 
+        // find to user enroll or not enroll 
+        app.get('/enrollled-users/:id' , async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+        })
+
         // students says
         app.get('/student-says', async (req, res) => {
             const studentSays = await studentSaysCollection.find().toArray();

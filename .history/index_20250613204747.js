@@ -65,6 +65,20 @@ async function run() {
             res.send(result);
         })
 
+        // find all enrolled users
+        app.get('/enrollled-users', async (req, res) => {
+            const enrolledUsers = await enrolledUsersDetails.find().toArray();
+            res.send(enrolledUsers);
+        });
+
+        // find to user enroll or not enroll 
+        app.get('/all-course/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) };
+            const result = await coursesCollection.findOne(query);
+            res.send(result);
+        })
+
         // students says
         app.get('/student-says', async (req, res) => {
             const studentSays = await studentSaysCollection.find().toArray();

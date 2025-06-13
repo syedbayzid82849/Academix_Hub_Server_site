@@ -25,7 +25,6 @@ async function run() {
         // MongoDb related
         const database = client.db("academix-hub");
         const coursesCollection = database.collection("courses");
-        const enrolledUsersDetails = database.collection('enrolledUsersDetails')
         const studentSaysCollection = database.collection("studentSays");
         // const instructorsCollection = database.collection("instructors");   
         // const usersCollection = database.collection("users");
@@ -82,9 +81,7 @@ async function run() {
 
         // send to enrolled user data to databse 
         app.post('/enrollled-users', async (req, res) => {
-            const enrolledData = req.body;
-            const result = await enrolledUsersDetails.insertOne(enrolledData)
-            res.send(result);
+            const enrolledData = 
         })
 
         // Send a ping to confirm a successful connection

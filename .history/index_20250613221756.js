@@ -83,8 +83,7 @@ async function run() {
         // send to enrolled user data to databse 
         app.post('/enrollled-users', async (req, res) => {
             const enrolledData = req.body;
-            const result = await enrolledUsersDetails.insertOne(enrolledData)
-            res.send(result);
+            const
         })
 
         // Send a ping to confirm a successful connection
