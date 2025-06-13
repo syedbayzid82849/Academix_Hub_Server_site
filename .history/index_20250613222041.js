@@ -74,8 +74,8 @@ async function run() {
         // find to user enroll or not enroll 
         app.get('/enrollled-users/:id', async (req, res) => {
             const id = req.params.id
-            const query = {courseId:id};
-            const result = await enrolledUsersDetails.findOne(query);
+            const query = { _id: new ObjectId(id) };
+            const result = await coursesCollection.findOne(query);
             res.send(result);
         })
 
