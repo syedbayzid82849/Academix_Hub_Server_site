@@ -115,7 +115,7 @@ async function run() {
         app.delete('/all-course/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
-            const result = await coursesCollection.deleteOne(query)
+            const result = await coursesCollection.deleteOne()
         })
 
         // Send a ping to confirm a successful connection
