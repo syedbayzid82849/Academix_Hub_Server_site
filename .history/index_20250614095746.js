@@ -80,12 +80,7 @@ async function run() {
         });
 
         // find user added course 
-        app.get('/menage-course/:email', async(req, res) => {
-            const email = req.params.email;
-            const filter = {instructorEmail: email};
-            const allCourses = await coursesCollection.find(filter).toArray();
-            res.send(allCourses)
-        })
+        app.get('/menage-course/:email')
 
         // students says
         app.get('/student-says', async (req, res) => {

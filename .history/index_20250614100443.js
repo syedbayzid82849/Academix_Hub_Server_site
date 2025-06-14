@@ -77,7 +77,7 @@ async function run() {
             const query = {courseId:id};
             const result = await enrolledUsersDetails.findOne(query);
             res.send(result);
-        });
+        }); \
 
         // find user added course 
         app.get('/menage-course/:email', async(req, res) => {
