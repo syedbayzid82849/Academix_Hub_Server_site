@@ -90,6 +90,7 @@ async function run() {
         // find enroll data of user's 
         app.get('/myEnrolls', async (req, res) => {
             const email = req.query.email;
+            console.log(email);
             const query = {
                 userEmail: email
             }

@@ -88,8 +88,9 @@ async function run() {
         })
 
         // find enroll data of user's 
-        app.get('/myEnrolls', async (req, res) => {
+        app.get('/myEnrolls', async(req, res) => {
             const email = req.query.email;
+            console.log(object);
             const query = {
                 userEmail: email
             }
@@ -113,7 +114,7 @@ async function run() {
         });
 
         // send to enrolled user data to databse 
-        app.post('/enrolled-users', async (req, res) => {
+        app.post('/enrollled-users', async (req, res) => {
             const enrolledData = req.body;
             const result = await enrolledUsersDetails.insertOne(enrolledData)
             res.send(result);
@@ -141,17 +142,7 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await coursesCollection.deleteOne(query)
-            res.send(result)
         })
-
-        // user enrollment delete 
-        app.delete('/myEnrolls/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: new ObjectId(id) };
-            const result = await enrolledUsersDetails.deleteOne(query)
-            res.send(result)
-        })
-
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });

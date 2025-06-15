@@ -90,6 +90,7 @@ async function run() {
         // find enroll data of user's 
         app.get('/myEnrolls', async (req, res) => {
             const email = req.query.email;
+            console.log(email);
             const query = {
                 userEmail: email
             }
@@ -141,15 +142,13 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await coursesCollection.deleteOne(query)
-            res.send(result)
         })
 
         // user enrollment delete 
         app.delete('/myEnrolls/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
-            const result = await enrolledUsersDetails.deleteOne(query)
-            res.send(result)
+            const result = await coursesCollection.deleteOne(query)
         })
 
 

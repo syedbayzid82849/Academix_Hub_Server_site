@@ -66,13 +66,13 @@ async function run() {
         })
 
         // find all enrolled users
-        app.get('/enrolled-users', async (req, res) => {
+        app.get('/enrollled-users', async (req, res) => {
             const enrolledUsers = await enrolledUsersDetails.find().toArray();
             res.send(enrolledUsers);
         });
 
         // find to user enroll or not enroll 
-        app.get('/enrolled-users/:id', async (req, res) => {
+        app.get('/enrollled-users/:id', async (req, res) => {
             const id = req.params.id
             const query = { courseId: id };
             const result = await enrolledUsersDetails.findOne(query);
@@ -85,16 +85,6 @@ async function run() {
             const filter = { instructorEmail: email };
             const allCourses = await coursesCollection.find(filter).toArray();
             res.send(allCourses)
-        })
-
-        // find enroll data of user's 
-        app.get('/myEnrolls', async (req, res) => {
-            const email = req.query.email;
-            const query = {
-                userEmail: email
-            }
-            const result = await enrolledUsersDetails.find(query).toArray()
-            res.send(result)
         })
 
         // students says
@@ -113,27 +103,14 @@ async function run() {
         });
 
         // send to enrolled user data to databse 
-        app.post('/enrolled-users', async (req, res) => {
+        app.post('/enrollled-users', async (req, res) => {
             const enrolledData = req.body;
             const result = await enrolledUsersDetails.insertOne(enrolledData)
             res.send(result);
         })
 
         // patch opation 
-        // update Course
-        app.patch('/all-course/:id', async (req, res) => {
-            const id = req.params.id
-            const updatedData = req.body;
-
-            const query = { _id: new ObjectId(id) };
-            const updateDoc = {
-                $set: updatedData
-            };
-
-            const result = await coursesCollection.updateOne(query, updateDoc);
-            res.send(result);
-        })
-
+        
 
         // delete operation 
         // user add course delete 
@@ -141,17 +118,7 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await coursesCollection.deleteOne(query)
-            res.send(result)
         })
-
-        // user enrollment delete 
-        app.delete('/myEnrolls/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: new ObjectId(id) };
-            const result = await enrolledUsersDetails.deleteOne(query)
-            res.send(result)
-        })
-
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
