@@ -119,53 +119,47 @@ async function run() {
 
         // Populer courses find and show 
         app.get('/popular-courses', async (req, res) => {
-            try {
-                const popularCourses = await enrolledUsersDetails.aggregate([
-                    {
-                        $group: {
-                            _id: { $toObjectId: "$courseId" }, // Ensure courseId is converted to ObjectId
-                            enrollCount: { $sum: 1 }
-                        }
-                    },
-                    {
-                        $sort: { enrollCount: -1 }
-                    },
-                    {
-                        $limit: 6
-                    },
-                    {
-                        $lookup: {
-                            from: 'courses',
-                            localField: '_id',
-                            foreignField: '_id',
-                            as: 'courseDetails'
-                        }
-                    },
-                    {
-                        $unwind: '$courseDetails'
-                    },
-                    {
-                        $project: {
-                            _id: '$courseDetails._id',
-                            enrollCount: 1,
-                            title: '$courseDetails.title',
-                            instructorName: '$courseDetails.instructorName',
-                            image: '$courseDetails.image',
-                            totalSeats: '$courseDetails.totalSeats',
-                            duration: '$courseDetails.duration',
-                            description: '$courseDetails.description'
-                        }
+            const popularCourses = await db.collection('enrolledUsersDetails').aggregate([
+                {
+                    $group: {
+                        _id: '$courseId',        // courseId দিয়ে গ্রুপ করবো
+                        enrollCount: { $sum: 1 } // কতবার এনরোল হয়েছে সেটার গুনতি
                     }
-                ]).toArray();
+                },
+                {
+                    $sort: { enrollCount: -1 } // বেশি এনরোল হয়েছে সে গুলো উপরে
+                },
+                {
+                    $limit: 6                  // সর্বোচ্চ ৬টা popular course নেবো
+                },
+                {
+                    $lookup: {                 // courses collection থেকে course details আনবো
+                        from: 'courses',
+                        localField: '_id',       // enrolledUsersDetails এর courseId
+                        foreignField: '_id',     // courses collection এর _id
+                        as: 'courseDetails'
+                    }
+                },
+                {
+                    $unwind: '$courseDetails'  // array থেকে একেকটা object করবো
+                },
+                {
+                    $project: {                // যা যা তথ্য দরকার তা projection
+                        courseId: '$_id',
+                        enrollCount: 1,
+                        title: '$courseDetails.title',
+                        instructorName: '$courseDetails.instructorName',
+                        image: '$courseDetails.image',
+                        totalSeats: '$courseDetails.totalSeats',
+                        duration: '$courseDetails.duration'
+                    }
+                }
+            ]).toArray();
 
-                res.send(popularCourses);
-            } catch (error) {
-                console.error('Error fetching popular courses:', error);
-                res.status(500).send({ error: 'Failed to fetch popular courses' });
-            }
-        });
+            res.send(popularCourses);
 
 
+        })
 
         // students says
         app.get('/student-says', async (req, res) => {

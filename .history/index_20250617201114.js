@@ -119,53 +119,44 @@ async function run() {
 
         // Populer courses find and show 
         app.get('/popular-courses', async (req, res) => {
-            try {
-                const popularCourses = await enrolledUsersDetails.aggregate([
-                    {
-                        $group: {
-                            _id: { $toObjectId: "$courseId" }, // Ensure courseId is converted to ObjectId
-                            enrollCount: { $sum: 1 }
-                        }
-                    },
-                    {
-                        $sort: { enrollCount: -1 }
-                    },
-                    {
-                        $limit: 6
-                    },
-                    {
-                        $lookup: {
-                            from: 'courses',
-                            localField: '_id',
-                            foreignField: '_id',
-                            as: 'courseDetails'
-                        }
-                    },
-                    {
-                        $unwind: '$courseDetails'
-                    },
-                    {
-                        $project: {
-                            _id: '$courseDetails._id',
-                            enrollCount: 1,
-                            title: '$courseDetails.title',
-                            instructorName: '$courseDetails.instructorName',
-                            image: '$courseDetails.image',
-                            totalSeats: '$courseDetails.totalSeats',
-                            duration: '$courseDetails.duration',
-                            description: '$courseDetails.description'
-                        }
+            const popularCourses = await db.collection('enrolledUsersDetails').aggregate([
+                {
+                    $group: {
+                        _id: '$courseId',  
+                        enrollCount: { $sum: 1 }
                     }
-                ]).toArray();
-
-                res.send(popularCourses);
-            } catch (error) {
-                console.error('Error fetching popular courses:', error);
-                res.status(500).send({ error: 'Failed to fetch popular courses' });
-            }
-        });
-
-
+                },
+                {
+                    $sort: { enrollCount: -1 }
+                },
+                {
+                    $limit: 6                  //
+                },
+                {
+                    $lookup: {                 // courses co
+                        from: 'courses',
+                        localField: '_id',       
+                        foreignField: '_id',
+                        as: 'courseDetails'
+                    }
+                },
+                {
+                    $unwind: '$courseDetails' 
+                },
+                {
+                    $project: {                
+                        courseId: '$_id',
+                        enrollCount: 1,
+                        title: '$courseDetails.title',
+                        instructorName: '$courseDetails.instructorName',
+                        image: '$courseDetails.image',
+                        totalSeats: '$courseDetails.totalSeats',
+                        duration: '$courseDetails.duration'
+                    }
+                }
+            ]).toArray();
+            res.send(popularCourses);
+        })
 
         // students says
         app.get('/student-says', async (req, res) => {

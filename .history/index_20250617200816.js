@@ -117,55 +117,7 @@ async function run() {
             res.send(userEnrolls)
         })
 
-        // Populer courses find and show 
-        app.get('/popular-courses', async (req, res) => {
-            try {
-                const popularCourses = await enrolledUsersDetails.aggregate([
-                    {
-                        $group: {
-                            _id: { $toObjectId: "$courseId" }, // Ensure courseId is converted to ObjectId
-                            enrollCount: { $sum: 1 }
-                        }
-                    },
-                    {
-                        $sort: { enrollCount: -1 }
-                    },
-                    {
-                        $limit: 6
-                    },
-                    {
-                        $lookup: {
-                            from: 'courses',
-                            localField: '_id',
-                            foreignField: '_id',
-                            as: 'courseDetails'
-                        }
-                    },
-                    {
-                        $unwind: '$courseDetails'
-                    },
-                    {
-                        $project: {
-                            _id: '$courseDetails._id',
-                            enrollCount: 1,
-                            title: '$courseDetails.title',
-                            instructorName: '$courseDetails.instructorName',
-                            image: '$courseDetails.image',
-                            totalSeats: '$courseDetails.totalSeats',
-                            duration: '$courseDetails.duration',
-                            description: '$courseDetails.description'
-                        }
-                    }
-                ]).toArray();
-
-                res.send(popularCourses);
-            } catch (error) {
-                console.error('Error fetching popular courses:', error);
-                res.status(500).send({ error: 'Failed to fetch popular courses' });
-            }
-        });
-
-
+        Populer courses find and show 
 
         // students says
         app.get('/student-says', async (req, res) => {

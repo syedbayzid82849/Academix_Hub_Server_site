@@ -120,10 +120,10 @@ async function run() {
         // Populer courses find and show 
         app.get('/popular-courses', async (req, res) => {
             try {
-                const popularCourses = await enrolledUsersDetails.aggregate([
+                const popularCourses = await db.collection('enrolledUsersDetails').aggregate([
                     {
                         $group: {
-                            _id: { $toObjectId: "$courseId" }, // Ensure courseId is converted to ObjectId
+                            _id: '$courseId',
                             enrollCount: { $sum: 1 }
                         }
                     },
@@ -164,7 +164,6 @@ async function run() {
                 res.status(500).send({ error: 'Failed to fetch popular courses' });
             }
         });
-
 
 
         // students says
