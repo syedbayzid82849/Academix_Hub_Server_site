@@ -182,7 +182,8 @@ async function run() {
                 return res.status(400).send({ error: 'Email query parameter is required' });
             }
 
-            const query = { courseId: id, userEmail: email };
+            const query = {             const query = {courseId: id};
+, userEmail: email };
             const result = await enrolledUsersDetails.deleteOne(query);
 
             res.send(result);

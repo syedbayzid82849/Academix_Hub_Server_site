@@ -110,12 +110,7 @@ async function run() {
         })
 
         // user how may enrolled in courses 
-        app.get('/enroll-count/:email', async (req, res) => {
-            const email = req.params.email;
-            const filter = { userEmail: email };
-            const userEnrolls = await enrolledUsersDetails.find(filter).toArray();
-            res.send(userEnrolls)
-        })
+
 
         // students says
         app.get('/student-says', async (req, res) => {
@@ -170,22 +165,6 @@ async function run() {
             const query = { _id: new ObjectId(id) };
             const result = await enrolledUsersDetails.deleteOne(query)
             res.send(result)
-        })
-
-        // delete enrollment user stay in course details page 
-        app.delete('/myEnroll/:id', async (req, res) => {
-            const id = req.params.id;
-            const email = req.query.email;
-
-            // Defensive check
-            if (!email) {
-                return res.status(400).send({ error: 'Email query parameter is required' });
-            }
-
-            const query = { courseId: id, userEmail: email };
-            const result = await enrolledUsersDetails.deleteOne(query);
-
-            res.send(result);
         })
 
 

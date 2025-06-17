@@ -173,20 +173,7 @@ async function run() {
         })
 
         // delete enrollment user stay in course details page 
-        app.delete('/myEnroll/:id', async (req, res) => {
-            const id = req.params.id;
-            const email = req.query.email;
-
-            // Defensive check
-            if (!email) {
-                return res.status(400).send({ error: 'Email query parameter is required' });
-            }
-
-            const query = { courseId: id, userEmail: email };
-            const result = await enrolledUsersDetails.deleteOne(query);
-
-            res.send(result);
-        })
+        app.delet
 
 
         // Send a ping to confirm a successful connection

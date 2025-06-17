@@ -160,7 +160,8 @@ async function run() {
         app.delete('/all-course/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
-            const result = await coursesCollection.deleteOne(query)
+            const result = await enrolledUsersDetails
+.deleteOne(query)
             res.send(result)
         })
 
@@ -176,13 +177,14 @@ async function run() {
         app.delete('/myEnroll/:id', async (req, res) => {
             const id = req.params.id;
             const email = req.query.email;
+            console.log(id, email);
 
             // Defensive check
             if (!email) {
                 return res.status(400).send({ error: 'Email query parameter is required' });
             }
 
-            const query = { courseId: id, userEmail: email };
+            const query = { _id: new ObjectId(id), userEmail: email };
             const result = await enrolledUsersDetails.deleteOne(query);
 
             res.send(result);

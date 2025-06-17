@@ -58,7 +58,7 @@ async function run() {
         });
 
         // find course for details
-        app.get('/courseDetails/:id', async (req, res) => {
+        app.get('/all-course/:id', async (req, res) => {
             const id = req.params.id
             const query = { _id: new ObjectId(id) };
             const result = await coursesCollection.findOne(query);
@@ -71,12 +71,14 @@ async function run() {
             const courseId = req.params.id;
             const email = req.query.email;
 
+            // যদি ইমেইল দেওয়া না থাকে, তাহলে সব ইউজার ফেরত দাও (সেইটা তুমি অন্য useEffect এ ব্যবহার করছো)
             if (!email) {
                 const query = { courseId: courseId };
                 const enrolledUsers = await enrolledUsersDetails.find(query).toArray();
                 return res.send(enrolledUsers);
             }
 
+            // যদি ইমেইল দেওয়া থাকে, তাহলে নির্দিষ্ট ইউজার এনরোলড কিনা চেক করো
             const query = { courseId: courseId, userEmail: email };
             const result = await enrolledUsersDetails.findOne(query);
             res.send(result);
@@ -91,14 +93,6 @@ async function run() {
             res.send(allCourses)
         })
 
-        // edit courses 
-        app.get('/edit-course/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: new ObjectId(id) };
-            const result = await coursesCollection.findOne(query);
-            res.send(result);
-        })
-
         // find enroll data of user's 
         app.get('/myEnrolls', async (req, res) => {
             const email = req.query.email;
@@ -107,14 +101,6 @@ async function run() {
             }
             const result = await enrolledUsersDetails.find(query).toArray()
             res.send(result)
-        })
-
-        // user how may enrolled in courses 
-        app.get('/enroll-count/:email', async (req, res) => {
-            const email = req.params.email;
-            const filter = { userEmail: email };
-            const userEnrolls = await enrolledUsersDetails.find(filter).toArray();
-            res.send(userEnrolls)
         })
 
         // students says
@@ -170,22 +156,6 @@ async function run() {
             const query = { _id: new ObjectId(id) };
             const result = await enrolledUsersDetails.deleteOne(query)
             res.send(result)
-        })
-
-        // delete enrollment user stay in course details page 
-        app.delete('/myEnroll/:id', async (req, res) => {
-            const id = req.params.id;
-            const email = req.query.email;
-
-            // Defensive check
-            if (!email) {
-                return res.status(400).send({ error: 'Email query parameter is required' });
-            }
-
-            const query = { courseId: id, userEmail: email };
-            const result = await enrolledUsersDetails.deleteOne(query);
-
-            res.send(result);
         })
 
 
