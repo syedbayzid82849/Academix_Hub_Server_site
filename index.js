@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -27,8 +28,8 @@ async function run() {
         const coursesCollection = database.collection("courses");
         const enrolledUsersDetails = database.collection('enrolledUsersDetails')
         const studentSaysCollection = database.collection("studentSays");
-        // const instructorsCollection = database.collection("instructors");   
-        // const usersCollection = database.collection("users");
+        const instructorsCollection = database.collection("instructors");
+        const usersCollection = database.collection("users");
 
         // post operations
         // app.post('/enrollments', async (req, res) => {
@@ -237,6 +238,76 @@ async function run() {
 
             res.send(result);
         })
+
+        //stripe payment
+        app.post("/api/create-checkout-session", async (req, res) => {
+            try {
+                const { plan, userEmail } = req.body;
+                if (!plan || !userEmail) return res.status(400).json({ error: "Plan and email required" });
+
+                const session = await stripe.checkout.sessions.create({
+                    payment_method_types: ["card"],
+                    mode: "payment",
+                    line_items: [
+                        {
+                            price_data: {
+                                currency: "usd",
+                                product_data: {
+                                    name: plan.name,
+                                    description: plan.subtitle,
+                                },
+                                unit_amount: plan.amount * 100, // cents
+                            },
+                            quantity: 1,
+                        },
+                    ],
+                    customer_email: userEmail,
+                    metadata: {
+                        userEmail,
+                        planName: plan.name
+                    },
+                    success_url: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+                    cancel_url: `${process.env.FRONTEND_URL}/payment-cancel`,
+                });
+
+                res.json({ url: session.url });
+            } catch (error) {
+                console.error("Stripe error:", error);
+                res.status(500).json({ error: error.message });
+            }
+        });
+
+        // -----------------------
+        // Stripe Webhook
+        // -----------------------
+        app.post("/api/webhook", express.raw({ type: "application/json" }), async (req, res) => {
+            const sig = req.headers["stripe-signature"];
+            let event;
+
+            try {
+                event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+            } catch (err) {
+                console.error("Webhook signature failed:", err.message);
+                return res.status(400).send(`Webhook Error: ${err.message}`);
+            }
+
+            if (event.type === "checkout.session.completed") {
+                const session = event.data.object;
+                const userEmail = session.metadata?.userEmail;
+                const planName = session.metadata?.planName;
+
+                if (userEmail) {
+                    await usersCollection.updateOne(
+                        { email: userEmail },
+                        { $set: { membership: { plan: planName, updatedAt: new Date() }, isPremium: true } },
+                        { upsert: true }
+                    );
+                    console.log(`Membership updated for ${userEmail}`);
+                }
+            }
+
+            res.json({ received: true });
+        });
 
 
         // Send a ping to confirm a successful connection

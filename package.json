@@ -3,7 +3,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "mongodb": "^5.9.2"
+    "mongodb": "^5.9.2",
+    "stripe": "^19.1.0"
   },
   "name": "academix-hub-server",
   "version": "1.0.0",
