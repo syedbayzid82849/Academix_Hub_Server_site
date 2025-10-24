@@ -353,6 +353,41 @@ ${details}
                 res.status(500).send({ success: false, message: "Failed to send email." });
             }
         });
+        // ===========================
+        // Dashboard Stats API
+        // ===========================
+        app.get("/api/dashboard-stats", async (req, res) => {
+            try {
+                const email = req.query.email; // instructor email
+
+                if (!email) return res.status(400).json({ error: "Email required" });
+
+                // Total Courses by this instructor
+                const totalCourses = await coursesCollection.countDocuments({ instructorEmail: email });
+
+                // Active Students (enrolled in any course of this instructor)
+                const courses = await coursesCollection.find({ instructorEmail: email }).project({ _id: 1 }).toArray();
+                const courseIds = courses.map(course => course._id.toString());
+
+                const activeStudents = await enrolledUsersDetails.countDocuments({ courseId: { $in: courseIds } });
+
+                // Hours Watched (Example: Sum of lesson durations completed by students, here simplified)
+                const hoursWatched = 132; // Replace with your calculation if you have lesson progress collection
+
+                // Achievements (Example: Badges earned, simplified)
+                const achievements = 8; // Replace with your logic if you track achievements in DB
+
+                res.json([
+                    { title: "Total Courses", value: totalCourses },
+                    { title: "Active Students", value: activeStudents },
+                    { title: "Hours Watched", value: `${hoursWatched}h` },
+                    { title: "Achievements", value: achievements },
+                ]);
+            } catch (error) {
+                console.error("Dashboard stats error:", error);
+                res.status(500).json({ error: error.message });
+            }
+        });
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
