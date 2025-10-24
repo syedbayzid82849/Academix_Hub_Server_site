@@ -1,9 +1,9 @@
+const nodemailer = require("nodemailer");
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-const nodemailer = require("nodemailer");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -310,6 +310,49 @@ async function run() {
             res.json({ received: true });
         });
 
+        // ============================
+        // 📩 Contact Form Email Route
+        // ============================
+        app.post("/send-email", async (req, res) => {
+            try {
+                const { name, email, phone, details } = req.body;
+                console.log(name, email, details, "sendEmail")
+                // 1️⃣ Create Transporter
+                const transporter = nodemailer.createTransport({
+                    service: "gmail",
+                    auth: {
+                        user: process.env.EMAIL_USER,
+                        pass: process.env.EMAIL_PASS,
+                    },
+                });
+                console.log("Email user:", process.env.EMAIL_USER);
+
+                // 2️⃣ Create Mail Options
+                const mailOptions = {
+                    from: process.env.EMAIL_USER,
+                    to: process.env.EMAIL_USER,
+                    subject: `New Contact Message from ${name}`,
+                    text: `
+You received a new message from Academix-Hub Contact Form:
+
+👤 Name: ${name}
+📧 Email: ${email}
+📞 Phone: ${phone}
+
+💬 Message:
+${details}
+      `,
+                };
+
+                // 3️⃣ Send Email
+                await transporter.sendMail(mailOptions);
+
+                res.send({ success: true, message: "Email sent successfully!" });
+            } catch (error) {
+                console.error("Error sending email:", error);
+                res.status(500).send({ success: false, message: "Failed to send email." });
+            }
+        });
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
