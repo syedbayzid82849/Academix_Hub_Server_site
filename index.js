@@ -316,7 +316,7 @@ async function run() {
         app.post("/send-email", async (req, res) => {
             try {
                 const { name, email, phone, details } = req.body;
-                console.log(name, email, details, "sendEmail")
+                console.log(name, email, details, "sendEFGHTDHYTmail")
                 // 1️⃣ Create Transporter
                 const transporter = nodemailer.createTransport({
                     service: "gmail",

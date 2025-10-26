@@ -10,10 +10,11 @@
   "name": "academix-hub-server",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
-  },
+"scripts": {
+  "start": "node index.js",
+  "dev": "nodemon index.js",
+  "build": "echo 'No build needed for backend server'"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Programming-Hero-Web-Course4/b11a11-server-side-syedbayzid82849.git"
